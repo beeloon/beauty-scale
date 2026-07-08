@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #fbf7f2; /* теплий кремовий фон */
+  --surface: #ffffff; /* картки */
+  --ink: #2a2431; /* глибокий баклажан-графіт, основний текст */
+  --ink-soft: #6b6270; /* другорядний текст */
+  --gold: #c9a24b; /* акцент «ідеалу», gold leaf */
+  --line: #e9e0d6; /* тонкі роздільники */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  @apply bg-bg font-body text-ink antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #e4a6ae;
+  color: #2a2431;
+}
