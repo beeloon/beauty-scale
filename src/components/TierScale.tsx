@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { motion } from "framer-motion";
 import { tiers } from "../data/tiers";
 import TierCard from "./TierCard";
@@ -12,12 +13,14 @@ const listVariants = {
   },
 };
 
-export default function TierScale() {
+// ref потрібен App для scroll tint — підфарбовування фону сторінки
+const TierScale = forwardRef<HTMLElement>(function TierScale(_props, ref) {
   // Висхідна композиція: тір 6 зверху → тір 1 знизу
   const descending = [...tiers].sort((a, b) => b.id - a.id);
 
   return (
     <section
+      ref={ref}
       aria-label="Шкала тірів"
       className="relative px-6 py-24 md:py-32"
     >
@@ -86,4 +89,6 @@ export default function TierScale() {
       </div>
     </section>
   );
-}
+});
+
+export default TierScale;

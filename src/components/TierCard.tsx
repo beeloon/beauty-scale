@@ -1,18 +1,11 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { BeautyTier } from "../data/tiers";
+import { darken } from "../utils/color";
 
 interface TierCardProps {
   tier: BeautyTier;
   /** Найвищий тір отримує gold-leaf акцент і легке світіння */
   highlighted?: boolean;
-}
-
-/** Затемнює hex-колір, щоб світлі тіри лишалися контрастними на білому (WCAG AA) */
-function darken(hex: string, factor: number): string {
-  const n = parseInt(hex.slice(1), 16);
-  const channel = (shift: number) =>
-    Math.round(((n >> shift) & 0xff) * factor);
-  return `rgb(${channel(16)}, ${channel(8)}, ${channel(0)})`;
 }
 
 const cardVariants = {
