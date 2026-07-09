@@ -21,25 +21,20 @@ function usePageTint(sectionRef: React.RefObject<HTMLElement>): string {
   useEffect(() => {
     // кольори згори донизу: тір 6 → тір 1
     const colors = [...tiers].sort((a, b) => b.id - a.id).map((t) => t.color);
-    let rafPending = false;
 
+    // scroll-події вже вирівняні по кадрах — рахуємо одразу, без rAF-гейта
     const onScroll = () => {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(() => {
-        rafPending = false;
-        const el = sectionRef.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const vh = window.innerHeight;
-        const p = Math.min(1, Math.max(0, (vh / 2 - rect.top) / rect.height));
-        const ramp = Math.min(1, Math.max(0, Math.min(p, 1 - p) * 4));
-        const pos = p * (colors.length - 1);
-        const lo = Math.floor(pos);
-        const hi = Math.min(colors.length - 1, lo + 1);
-        const tint = lerpHex(colors[lo], colors[hi], pos - lo);
-        setPageBg(mixWithBg(tint, 0.12 * ramp));
-      });
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const p = Math.min(1, Math.max(0, (vh / 2 - rect.top) / rect.height));
+      const ramp = Math.min(1, Math.max(0, Math.min(p, 1 - p) * 4));
+      const pos = p * (colors.length - 1);
+      const lo = Math.floor(pos);
+      const hi = Math.min(colors.length - 1, lo + 1);
+      const tint = lerpHex(colors[lo], colors[hi], pos - lo);
+      setPageBg(mixWithBg(tint, 0.12 * ramp));
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -59,10 +54,17 @@ export default function App() {
   const pageBg = usePageTint(scaleRef);
 
   return (
-    <div
-      className="relative overflow-x-clip"
-      style={{ backgroundColor: pageBg, transition: "background-color 0.6s ease" }}
-    >
+    <div className="relative overflow-x-clip">
+      {/* Фіксована підкладка на в'юпорт: тонування без швів, які дає
+          перемальовування плитками величезного скрол-контейнера */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 -z-10"
+        style={{
+          backgroundColor: pageBg,
+          transition: "background-color 0.6s ease",
+        }}
+      />
       <Hero />
       <main>
         <Intro />
